@@ -1,0 +1,252 @@
+{
+  "openapi" : "3.0.0",
+  "info" : {
+    "title" : "n8n User Management",
+    "description" : "User Management API designed for n8n",
+    "contact" : {
+      "name" : "Jason McFeetors"
+    },
+    "version" : "1.0.0"
+  },
+  "servers" : [ {
+    "url" : "https://tephlon.app.n8n.cloud/webhook",
+    "description" : "Production"
+  }, {
+    "url" : "https://tephlon.app.n8n.cloud/webhook-test",
+    "description" : "Test"
+  } ],
+  "security" : [ {
+    "bearerAuth" : [ ]
+  } ],
+  "paths" : {
+    "/api/v1/user/add" : {
+      "post" : {
+        "tags" : [ "Users" ],
+        "summary" : "Add new user to the CRM",
+        "operationId" : "addUser",
+        "parameters" : [ {
+          "name" : "fname",
+          "in" : "query",
+          "description" : "User's First Name",
+          "required" : true,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "lname",
+          "in" : "query",
+          "description" : "User's Last Name",
+          "required" : true,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "email",
+          "in" : "query",
+          "description" : "User's Email Address",
+          "required" : true,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "password",
+          "in" : "query",
+          "description" : "User's Password",
+          "required" : true,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "User Added Successfully",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/userID"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/users/list" : {
+      "get" : {
+        "tags" : [ "Users" ],
+        "summary" : "List All Users",
+        "operationId" : "listUsers",
+        "responses" : {
+          "200" : {
+            "description" : "Users Listed Successfully",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/User"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/users/search" : {
+      "get" : {
+        "tags" : [ "Users" ],
+        "summary" : "Find user based on input",
+        "operationId" : "searchUsers",
+        "responses" : {
+          "200" : {
+            "description" : "User Searched Successfully",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/User"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/user/delete" : {
+      "post" : {
+        "tags" : [ "Users" ],
+        "summary" : "Delete user",
+        "operationId" : "delUser",
+        "parameters" : [ {
+          "name" : "userID",
+          "in" : "query",
+          "description" : "User ID",
+          "required" : true,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "User Deleted Successfully",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/user/changepw" : {
+      "post" : {
+        "tags" : [ "Users" ],
+        "summary" : "Change user password",
+        "operationId" : "changePW",
+        "parameters" : [ {
+          "name" : "userID",
+          "in" : "query",
+          "description" : "User ID",
+          "required" : true,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "integer"
+          }
+        }, {
+          "name" : "oldPW",
+          "in" : "query",
+          "description" : "Old Password",
+          "required" : true,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "newPW",
+          "in" : "query",
+          "description" : "New Password",
+          "required" : true,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Password Changed Successfully",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Result"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Access token is missing or invalid"
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "userID" : {
+        "type" : "object",
+        "properties" : {
+          "userID" : {
+            "type" : "integer"
+          }
+        }
+      },
+      "Result" : {
+        "type" : "object",
+        "properties" : {
+          "result" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "User" : {
+        "type" : "object",
+        "properties" : {
+          "userID" : {
+            "type" : "integer"
+          },
+          "fname" : {
+            "type" : "string"
+          },
+          "lname" : {
+            "type" : "string"
+          },
+          "email" : {
+            "type" : "string"
+          }
+        }
+      }
+    },
+    "responses" : {
+      "UnauthorizedError" : {
+        "description" : "Access token is missing or invalid"
+      }
+    },
+    "securitySchemes" : {
+      "bearerAuth" : {
+        "type" : "http",
+        "scheme" : "bearer"
+      }
+    }
+  }
+}

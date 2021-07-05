@@ -1,0 +1,1082 @@
+{
+  "name": "User Management API",
+  "nodes": [
+    {
+      "parameters": {},
+      "name": "Start",
+      "type": "n8n-nodes-base.start",
+      "typeVersion": 1,
+      "position": [
+        -20,
+        -200
+      ]
+    },
+    {
+      "parameters": {
+        "authentication": "headerAuth",
+        "httpMethod": "POST",
+        "path": "api/v1/user/add",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "name": "Add",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        550,
+        30
+      ],
+      "webhookId": "f929fdc9-b62a-4661-913e-b5648c407edd",
+      "credentials": {
+        "httpHeaderAuth": "Header Authentication"
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "headerAuth",
+        "path": "api/v1/user/list",
+        "responseMode": "lastNode",
+        "responseData": "allEntries",
+        "options": {}
+      },
+      "name": "List",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        550,
+        220
+      ],
+      "webhookId": "f6fdc989-a229-4a38-9072-2349e6f13b0f",
+      "credentials": {
+        "httpHeaderAuth": "Header Authentication"
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "headerAuth",
+        "path": "api/v1/user/search",
+        "responseMode": "lastNode",
+        "responseData": "allEntries",
+        "options": {}
+      },
+      "name": "Search",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        550,
+        350
+      ],
+      "webhookId": "4aa17c72-3068-4b6c-a646-4c776616cc2e",
+      "credentials": {
+        "httpHeaderAuth": "Header Authentication"
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "headerAuth",
+        "httpMethod": "POST",
+        "path": "api/v1/user/delete",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "name": "Delete",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        550,
+        520
+      ],
+      "webhookId": "1d72f449-9dc9-413e-af6c-dbd39f9a0aec",
+      "credentials": {
+        "httpHeaderAuth": "Header Authentication"
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "headerAuth",
+        "httpMethod": "POST",
+        "path": "api/v1/user/changepw",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "name": "ChangePW",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        560,
+        770
+      ],
+      "webhookId": "4b8c2974-bf13-44c9-a7d8-bb5cf8ab977d",
+      "credentials": {
+        "httpHeaderAuth": "Header Authentication"
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "application": "appn8eQUTiNYvnZwn",
+        "table": "Users",
+        "options": {}
+      },
+      "name": "Add New User",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 1,
+      "position": [
+        2500,
+        110
+      ],
+      "credentials": {
+        "airtableApi": "Airtable Creds"
+      }
+    },
+    {
+      "parameters": {
+        "action": "hmac",
+        "type": "SHA256",
+        "value": "={{$json[\"Password Hash\"]}}",
+        "dataPropertyName": "Password Hash",
+        "secret": "={{$json[\"Email\"]}}",
+        "encoding": "base64"
+      },
+      "name": "Encrypt Password",
+      "type": "n8n-nodes-base.crypto",
+      "typeVersion": 1,
+      "position": [
+        1350,
+        100
+      ]
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "string": [
+            {
+              "name": "First Name",
+              "value": "={{$json[\"query\"][\"fname\"]}}"
+            },
+            {
+              "name": "Last Name",
+              "value": "={{$json[\"query\"][\"lname\"]}}"
+            },
+            {
+              "name": "Email",
+              "value": "={{$json[\"query\"][\"email\"]}}"
+            },
+            {
+              "name": "Password Hash",
+              "value": "={{$json[\"query\"][\"password\"]}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Get User Info",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        750,
+        30
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json[\"Email\"]}}",
+              "operation": "isEmpty"
+            },
+            {
+              "value1": "={{$json[\"First Name\"]}}",
+              "operation": "isEmpty"
+            },
+            {
+              "value1": "={{$json[\"Last Name\"]}}",
+              "operation": "isEmpty"
+            },
+            {
+              "value1": "={{$json[\"Password Hash\"]}}",
+              "operation": "isEmpty"
+            }
+          ]
+        },
+        "combineOperation": "any"
+      },
+      "name": "Check If User Info Is Missing",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        950,
+        30
+      ]
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "number": [
+            {
+              "name": "code",
+              "value": 400
+            }
+          ],
+          "string": [
+            {
+              "name": "message",
+              "value": "Bad Request. Please ensure that you submit fname, lname, email and password."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Set Response Code",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        1180,
+        -20
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "list",
+        "application": "appn8eQUTiNYvnZwn",
+        "table": "Users",
+        "additionalOptions": {
+          "fields": [
+            "UserID",
+            "First Name",
+            "Last Name",
+            "Email"
+          ]
+        }
+      },
+      "name": "Get All Users",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 1,
+      "position": [
+        1560,
+        220
+      ],
+      "credentials": {
+        "airtableApi": "Airtable Creds"
+      }
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "string": [
+            {
+              "name": "First Name",
+              "value": "={{$json[\"query\"][\"fname\"]}}"
+            },
+            {
+              "name": "Last Name",
+              "value": "={{$json[\"query\"][\"lname\"]}}"
+            },
+            {
+              "name": "Email",
+              "value": "={{$json[\"query\"][\"email\"]}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Get Search Info",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        750,
+        350
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json[\"Email\"]}}",
+              "operation": "isEmpty"
+            }
+          ]
+        }
+      },
+      "name": "Check If Search Info Is Missing",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        950,
+        350
+      ]
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "number": [
+            {
+              "name": "code",
+              "value": 400
+            }
+          ],
+          "string": [
+            {
+              "name": "message",
+              "value": "Bad Request. Please ensure that you submit an email."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Set Fail Search Response Code",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        1180,
+        290
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "list",
+        "application": "appn8eQUTiNYvnZwn",
+        "table": "Users",
+        "additionalOptions": {
+          "fields": [
+            "UserID",
+            "First Name",
+            "Last Name",
+            "Email"
+          ],
+          "filterByFormula": "={Email}='{{$json[\"Email\"]}}'"
+        }
+      },
+      "name": "Get Found Users",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 1,
+      "position": [
+        1560,
+        400
+      ],
+      "credentials": {
+        "airtableApi": "Airtable Creds"
+      }
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "string": [
+            {
+              "name": "Email",
+              "value": "={{$json[\"query\"][\"email\"]}}"
+            },
+            {
+              "name": "Old Password",
+              "value": "={{$json[\"query\"][\"oldPW\"]}}"
+            },
+            {
+              "name": "New Password",
+              "value": "={{$json[\"query\"][\"newPW\"]}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Get Change Password Info",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        760,
+        770
+      ]
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "string": [
+            {
+              "name": "Email",
+              "value": "={{$json[\"query\"][\"email\"]}}"
+            },
+            {
+              "name": "Password Hash",
+              "value": "={{$json[\"query\"][\"password\"]}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Get Delete Info",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        750,
+        520
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json[\"Email\"]}}",
+              "operation": "isEmpty"
+            },
+            {
+              "value1": "={{$json[\"Password Hash\"]}}",
+              "operation": "isEmpty"
+            }
+          ]
+        },
+        "combineOperation": "any"
+      },
+      "name": "Check If Delete Info Is Missing",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        960,
+        520
+      ]
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "number": [
+            {
+              "name": "code",
+              "value": 400
+            }
+          ],
+          "string": [
+            {
+              "name": "message",
+              "value": "Bad Request. Please ensure that you submit an email and password."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Set Fail Delete Response",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        1190,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "list",
+        "application": "appn8eQUTiNYvnZwn",
+        "table": "Users",
+        "additionalOptions": {
+          "fields": [
+            "UserID",
+            "First Name",
+            "Last Name",
+            "Email"
+          ],
+          "filterByFormula": "=AND({Email}='{{$json[\"Email\"]}}',{Password Hash}='{{$json[\"Password Hash\"]}}')"
+        }
+      },
+      "name": "Find Delete User",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 1,
+      "position": [
+        1560,
+        600
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "airtableApi": "Airtable Creds"
+      }
+    },
+    {
+      "parameters": {
+        "action": "hmac",
+        "type": "SHA256",
+        "value": "={{$json[\"Password Hash\"]}}",
+        "dataPropertyName": "Password Hash",
+        "secret": "={{$json[\"Email\"]}}",
+        "encoding": "base64"
+      },
+      "name": "Encrypt Delete Password",
+      "type": "n8n-nodes-base.crypto",
+      "typeVersion": 1,
+      "position": [
+        1360,
+        600
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "application": "appn8eQUTiNYvnZwn",
+        "table": "Users",
+        "id": "={{$json[\"id\"]}}"
+      },
+      "name": "Delete User",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 1,
+      "position": [
+        2490,
+        630
+      ],
+      "credentials": {
+        "airtableApi": "Airtable Creds"
+      }
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "number": [
+            {
+              "name": "code",
+              "value": 400
+            }
+          ],
+          "string": [
+            {
+              "name": "message",
+              "value": "Bad Request. No such user can be found."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "No Such User",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        1940,
+        520
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json[\"id\"]}}",
+              "operation": "isEmpty"
+            }
+          ]
+        },
+        "combineOperation": "any"
+      },
+      "name": "Check for Delete User",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1740,
+        600
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json[\"Email\"]}}",
+              "operation": "isEmpty"
+            },
+            {
+              "value1": "={{$json[\"Old Password\"]}}",
+              "operation": "isEmpty"
+            },
+            {
+              "value1": "={{$json[\"New Password\"]}}",
+              "operation": "isEmpty"
+            }
+          ]
+        },
+        "combineOperation": "any"
+      },
+      "name": "Check If Delete Info Is Missing1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        970,
+        770
+      ]
+    },
+    {
+      "parameters": {
+        "action": "hmac",
+        "type": "SHA256",
+        "value": "={{$json[\"Old Password\"]}}",
+        "dataPropertyName": "Password Hash",
+        "secret": "={{$json[\"Email\"]}}",
+        "encoding": "base64"
+      },
+      "name": "Encrypt Old Password",
+      "type": "n8n-nodes-base.crypto",
+      "typeVersion": 1,
+      "position": [
+        1380,
+        860
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "list",
+        "application": "appn8eQUTiNYvnZwn",
+        "table": "Users",
+        "additionalOptions": {
+          "fields": [
+            "UserID",
+            "First Name",
+            "Last Name",
+            "Email"
+          ],
+          "filterByFormula": "=AND({Email}='{{$json[\"Email\"]}}',{Password Hash}='{{$json[\"Password Hash\"]}}')"
+        }
+      },
+      "name": "Find User",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 1,
+      "position": [
+        1570,
+        860
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "airtableApi": "Airtable Creds"
+      }
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "number": [
+            {
+              "name": "code",
+              "value": 400
+            }
+          ],
+          "string": [
+            {
+              "name": "message",
+              "value": "Bad Request. Please ensure that you submit an email, oldpw, and newpw."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Set Fail Change Password",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        1200,
+        720
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json[\"id\"]}}",
+              "operation": "isEmpty"
+            }
+          ]
+        },
+        "combineOperation": "any"
+      },
+      "name": "Check for User",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1750,
+        860
+      ]
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "number": [
+            {
+              "name": "code",
+              "value": 400
+            }
+          ],
+          "string": [
+            {
+              "name": "message",
+              "value": "Bad Request. No such user can be found."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "No User",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        1950,
+        780
+      ]
+    },
+    {
+      "parameters": {
+        "action": "hmac",
+        "type": "SHA256",
+        "value": "={{$node[\"Get Change Password Info\"].json[\"New Password\"]}}",
+        "dataPropertyName": "Password Hash",
+        "secret": "={{$node[\"Get Change Password Info\"].json[\"Email\"]}}",
+        "encoding": "base64"
+      },
+      "name": "Encrypt New Password",
+      "type": "n8n-nodes-base.crypto",
+      "typeVersion": 1,
+      "position": [
+        2130,
+        940
+      ]
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "string": [
+            {
+              "name": "Password Hash",
+              "value": "={{$json[\"Password Hash\"]}}"
+            },
+            {
+              "name": "id",
+              "value": "={{$json[\"id\"]}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Get New Password Hash",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        2320,
+        940
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "application": "appn8eQUTiNYvnZwn",
+        "table": "Users",
+        "id": "={{$json[\"id\"]}}",
+        "updateAllFields": false,
+        "fields": [
+          "Password Hash"
+        ],
+        "options": {}
+      },
+      "name": "Update Password",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 1,
+      "position": [
+        2500,
+        940
+      ],
+      "credentials": {
+        "airtableApi": "Airtable Creds"
+      }
+    }
+  ],
+  "connections": {
+    "Add": {
+      "main": [
+        [
+          {
+            "node": "Get User Info",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get User Info": {
+      "main": [
+        [
+          {
+            "node": "Check If User Info Is Missing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check If User Info Is Missing": {
+      "main": [
+        [
+          {
+            "node": "Set Response Code",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Encrypt Password",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Encrypt Password": {
+      "main": [
+        [
+          {
+            "node": "Add New User",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "List": {
+      "main": [
+        [
+          {
+            "node": "Get All Users",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search": {
+      "main": [
+        [
+          {
+            "node": "Get Search Info",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Search Info": {
+      "main": [
+        [
+          {
+            "node": "Check If Search Info Is Missing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check If Search Info Is Missing": {
+      "main": [
+        [
+          {
+            "node": "Set Fail Search Response Code",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get Found Users",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete": {
+      "main": [
+        [
+          {
+            "node": "Get Delete Info",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ChangePW": {
+      "main": [
+        [
+          {
+            "node": "Get Change Password Info",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Delete Info": {
+      "main": [
+        [
+          {
+            "node": "Check If Delete Info Is Missing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check If Delete Info Is Missing": {
+      "main": [
+        [
+          {
+            "node": "Set Fail Delete Response",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Encrypt Delete Password",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Encrypt Delete Password": {
+      "main": [
+        [
+          {
+            "node": "Find Delete User",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find Delete User": {
+      "main": [
+        [
+          {
+            "node": "Check for Delete User",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check for Delete User": {
+      "main": [
+        [
+          {
+            "node": "No Such User",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Delete User",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Change Password Info": {
+      "main": [
+        [
+          {
+            "node": "Check If Delete Info Is Missing1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check If Delete Info Is Missing1": {
+      "main": [
+        [
+          {
+            "node": "Set Fail Change Password",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Encrypt Old Password",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Encrypt Old Password": {
+      "main": [
+        [
+          {
+            "node": "Find User",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find User": {
+      "main": [
+        [
+          {
+            "node": "Check for User",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check for User": {
+      "main": [
+        [
+          {
+            "node": "No User",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Encrypt New Password",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Encrypt New Password": {
+      "main": [
+        [
+          {
+            "node": "Get New Password Hash",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get New Password Hash": {
+      "main": [
+        [
+          {
+            "node": "Update Password",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {},
+  "id": "1018"
+}
