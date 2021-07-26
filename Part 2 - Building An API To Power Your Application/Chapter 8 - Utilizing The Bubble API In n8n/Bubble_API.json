@@ -1,0 +1,281 @@
+{
+  "name": "Bubble API",
+  "nodes": [
+    {
+      "parameters": {},
+      "name": "Start",
+      "type": "n8n-nodes-base.start",
+      "typeVersion": 1,
+      "position": [
+        -680,
+        -40
+      ]
+    },
+    {
+      "parameters": {
+        "authentication": "headerAuth",
+        "url": "=https://n8n-book.bubbleapps.io/version-test/api/1.1/obj/newsletter/{{$node[\"Bubble Data (POST)\"].json[\"id\"]}}",
+        "options": {},
+        "queryParametersUi": {
+          "parameter": []
+        }
+      },
+      "name": "Bubble Data (GET 2)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        -50,
+        -40
+      ],
+      "notesInFlow": true,
+      "credentials": {
+        "httpHeaderAuth": "Bubble API"
+      },
+      "notes": "Retrieve single record"
+    },
+    {
+      "parameters": {
+        "authentication": "headerAuth",
+        "url": "https://n8n-book.bubbleapps.io/version-test/api/1.1/obj/newsletter",
+        "options": {},
+        "queryParametersUi": {
+          "parameter": []
+        }
+      },
+      "name": "Bubble Data (GET 1)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        -470,
+        -40
+      ],
+      "notesInFlow": true,
+      "credentials": {
+        "httpHeaderAuth": "Bubble API"
+      },
+      "notes": "Retrieve all records"
+    },
+    {
+      "parameters": {
+        "authentication": "headerAuth",
+        "requestMethod": "PATCH",
+        "url": "=https://n8n-book.bubbleapps.io/version-test/api/1.1/obj/newsletter/{{$json[\"response\"][\"_id\"]}}",
+        "options": {},
+        "bodyParametersUi": {
+          "parameter": [
+            {
+              "name": "title_text",
+              "value": "n8n Newsletter 1"
+            }
+          ]
+        },
+        "queryParametersUi": {
+          "parameter": []
+        }
+      },
+      "name": "Bubble Data (PATCH)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        170,
+        -40
+      ],
+      "notesInFlow": true,
+      "credentials": {
+        "httpHeaderAuth": "Bubble API"
+      },
+      "notes": "Update record"
+    },
+    {
+      "parameters": {
+        "authentication": "headerAuth",
+        "requestMethod": "PUT",
+        "url": "=https://n8n-book.bubbleapps.io/version-test/api/1.1/obj/newsletter/{{$node[\"Bubble Data (POST)\"].json[\"id\"]}}",
+        "options": {},
+        "bodyParametersUi": {
+          "parameter": [
+            {
+              "name": "content_text",
+              "value": "Welcome to the n8n Newsletter! We are expecting great things!"
+            },
+            {
+              "name": "title_text",
+              "value": "First n8n Newsletter"
+            }
+          ]
+        },
+        "queryParametersUi": {
+          "parameter": []
+        }
+      },
+      "name": "Bubble Data (PUT)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        400,
+        -40
+      ],
+      "notesInFlow": true,
+      "credentials": {
+        "httpHeaderAuth": "Bubble API"
+      },
+      "notes": "Replace record"
+    },
+    {
+      "parameters": {
+        "authentication": "headerAuth",
+        "requestMethod": "DELETE",
+        "url": "=https://n8n-book.bubbleapps.io/version-test/api/1.1/obj/newsletter/{{$node[\"Bubble Data (POST)\"].json[\"id\"]}}",
+        "options": {},
+        "queryParametersUi": {
+          "parameter": []
+        }
+      },
+      "name": "Bubble Data (DELETE)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        630,
+        -40
+      ],
+      "notesInFlow": true,
+      "credentials": {
+        "httpHeaderAuth": "Bubble API"
+      },
+      "notes": "Delete record"
+    },
+    {
+      "parameters": {
+        "authentication": "headerAuth",
+        "requestMethod": "POST",
+        "url": "https://n8n-book.bubbleapps.io/version-test/api/1.1/obj/newsletter",
+        "options": {},
+        "bodyParametersUi": {
+          "parameter": [
+            {
+              "name": "content_text",
+              "value": "This is the first n8n newsletter. We hope you enjoy it!"
+            },
+            {
+              "name": "title_text",
+              "value": "n8n Newsletter 01"
+            }
+          ]
+        },
+        "queryParametersUi": {
+          "parameter": []
+        }
+      },
+      "name": "Bubble Data (POST)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        -260,
+        -40
+      ],
+      "notesInFlow": true,
+      "credentials": {
+        "httpHeaderAuth": "Bubble API"
+      },
+      "notes": "Create new record"
+    },
+    {
+      "parameters": {
+        "authentication": "headerAuth",
+        "url": "https://n8n-book.bubbleapps.io/version-test/api/1.1/obj/newsletter",
+        "options": {},
+        "queryParametersUi": {
+          "parameter": [
+            {
+              "name": "constraints",
+              "value": "[\n  { \n    \"key\": \"title_text\", \n    \"constraint_type\": \"text contains\", \n    \"value\": \"Newsletter\" \n  },\n  { \n    \"key\": \"title_text\", \n    \"constraint_type\": \"not text contains\", \n    \"value\": \"First\" \n  }\n]"
+            }
+          ]
+        }
+      },
+      "name": "Bubble Data (Search)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        -470,
+        170
+      ],
+      "notesInFlow": true,
+      "credentials": {
+        "httpHeaderAuth": "Bubble API"
+      },
+      "notes": "Searching for records"
+    }
+  ],
+  "connections": {
+    "Bubble Data (POST)": {
+      "main": [
+        [
+          {
+            "node": "Bubble Data (GET 2)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Bubble Data (GET 2)": {
+      "main": [
+        [
+          {
+            "node": "Bubble Data (PATCH)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Bubble Data (PATCH)": {
+      "main": [
+        [
+          {
+            "node": "Bubble Data (PUT)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Bubble Data (PUT)": {
+      "main": [
+        [
+          {
+            "node": "Bubble Data (DELETE)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Bubble Data (GET 1)": {
+      "main": [
+        [
+          {
+            "node": "Bubble Data (POST)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Start": {
+      "main": [
+        [
+          {
+            "node": "Bubble Data (GET 1)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {},
+  "id": 1028
+}
