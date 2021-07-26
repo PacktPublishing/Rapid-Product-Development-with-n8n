@@ -1,0 +1,68 @@
+{
+  "name": "Bubble Events",
+  "nodes": [
+    {
+      "parameters": {},
+      "name": "Start",
+      "type": "n8n-nodes-base.start",
+      "typeVersion": 1,
+      "position": [
+        -40,
+        -50
+      ]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "bubble",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "name": "Get Bubble Events",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        450,
+        370
+      ],
+      "webhookId": "59bb9070-f9c6-45ef-a152-b2d1ca402eca"
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "string": [
+            {
+              "name": "Response",
+              "value": "=n8n received the following data on {{new Date().toDateString()}} at {{new Date().toTimeString()}}: {{$json[\"body\"][\"data\"]}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Response",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        650,
+        370
+      ]
+    }
+  ],
+  "connections": {
+    "Get Bubble Events": {
+      "main": [
+        [
+          {
+            "node": "Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {},
+  "id": 1033
+}
