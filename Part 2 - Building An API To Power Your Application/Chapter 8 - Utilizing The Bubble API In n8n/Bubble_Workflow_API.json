@@ -1,0 +1,65 @@
+{
+  "name": "Bubble Workflow API",
+  "nodes": [
+    {
+      "parameters": {},
+      "name": "Start",
+      "type": "n8n-nodes-base.start",
+      "typeVersion": 1,
+      "position": [
+        250,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "authentication": "headerAuth",
+        "requestMethod": "POST",
+        "url": "https://n8n-book.bubbleapps.io/version-test/api/1.1/wf/send-email",
+        "options": {},
+        "bodyParametersUi": {
+          "parameter": [
+            {
+              "name": "to",
+              "value": "n8n@example.com"
+            },
+            {
+              "name": "subject",
+              "value": "n8n Bubble Workflow API"
+            },
+            {
+              "name": "body",
+              "value": "DId you know that n8n can activate the Bubble workflow API and even send it data?!"
+            }
+          ]
+        }
+      },
+      "name": "Send Email",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        450,
+        300
+      ],
+      "credentials": {
+        "httpHeaderAuth": "Bubble API"
+      }
+    }
+  ],
+  "connections": {
+    "Start": {
+      "main": [
+        [
+          {
+            "node": "Send Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {},
+  "id": 1032
+}
