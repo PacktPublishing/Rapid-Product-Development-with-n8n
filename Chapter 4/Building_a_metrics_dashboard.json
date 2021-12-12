@@ -1,0 +1,125 @@
+{
+  "name": "Building a metrics dashboard",
+  "nodes": [
+    {
+      "parameters": {},
+      "name": "Start",
+      "type": "n8n-nodes-base.start",
+      "typeVersion": 1,
+      "position": [
+        250,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "path": "1d088606-a854-4216-b925-55f0d473f12d",
+        "responseMode": "lastNode",
+        "options": {
+          "responsePropertyName": "html"
+        }
+      },
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        450,
+        450
+      ],
+      "webhookId": "1d088606-a854-4216-b925-55f0d473f12d"
+    },
+    {
+      "parameters": {
+        "resource": "repository",
+        "operation": "get",
+        "owner": "n8n-io",
+        "repository": "n8n"
+      },
+      "name": "GitHub",
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1,
+      "position": [
+        650,
+        450
+      ],
+      "credentials": {
+        "githubApi": {
+          "id": "20",
+          "name": "GitHub"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://hub.docker.com/v2/repositories/n8nio/n8n",
+        "options": {}
+      },
+      "name": "HTTP Request",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        850,
+        450
+      ]
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "string": [
+            {
+              "name": "html",
+              "value": "=<html>\n<head>\n<style>\n@import url(https://fonts.googleapis.com/css?family=Droid+Sans);\n@import url(http://weloveiconfonts.com/api/?family=fontawesome);\n/* fontawesome */\n[class*=\"fontawesome-\"]:before {\n  font-family: 'FontAwesome', sans-serif;\n}\n* {\n    margin: 0;\n    padding: 0;\n    border: 0;\n    font-size: 100%;\n    font: inherit;\n    vertical-align: baseline;\n    -webkit-box-sizing: border-box;\n    -moz-box-sizing: border-box;\n    box-sizing: border-box;\n}\n.fl{ float:left; }\n.fr{ float: right; }\n/*its also known as clearfix*/\n.group:before,\n.group:after {\n    content: \"\";\n    display: table;\n} \n.group:after {\n    clear: both;\n}\n.group {\n    zoom: 1;  /*For IE 6/7 (trigger hasLayout) */\n}\n\nbody {\n    background: #F2F2F2;\n    font-family: 'Droid Sans', sans-serif;\n    line-height: 1;\n    font-size: 16px;    \n}\n.pricing-table {\n    width: 80%;\n    margin: 50px auto;\n    text-align: center;\n    padding: 10px;\n    padding-right: 0;\n}\n.pricing-table .heading{\n    color: #9C9E9F;\n    text-transform: uppercase;\n    font-size: 1.3rem;\n    margin-bottom: 4rem;\n}\n.block{\n    width: 30%;    \n    margin: 0 15px;\n    overflow: hidden;\n    -webkit-border-radius: 5px;\n    -moz-border-radius: 5px;\n    border-radius: 5px;    \n/*    border: 1px solid red;*/\n}\n/*Shared properties*/\n.title,.pt-footer{\n    color: #FEFEFE;\n    text-transform: capitalize;\n    line-height: 2.5;\n    position: relative;\n}\n.content{\n    position: relative;\n    color: #FEFEFE;\n    padding: 20px 0 10px 0;\n}\n.price{\n    position: relative;\n    display: inline-block;\n    margin-bottom: 0.625rem;\n}\n.price span{    \n    font-size: 3rem;\n    letter-spacing: 8px;\n    font-weight: bold;        \n}\n.pt-footer{\n    font-size: 0.95rem;\n    text-transform: capitalize;\n}\n/*PERSONAL*/\n.personal .title{        \n    background: #78CFBF;    \n}\n.personal .content,.personal .pt-footer{\n    background: #82DACA;\n}\n.personal .content:after{\t\n\tborder-top-color: #82DACA;\t\n}\n.personal .pt-footer:after{\n    border-top-color: #FFFFFF;\n}\n.professional .title{\n    background: #3EC6E0;\n}\n.professional .content,.professional .pt-footer{\n    background: #53CFE9;\n}\n.professional .content:after{\t\n\tborder-top-color: #53CFE9;\t\n}\n.professional .pt-footer:after{\n    border-top-color: #FFFFFF;\n}\n/*BUSINESS*/\n.business .title{\n    background: #E3536C;\n}\n.business .content,.business .pt-footer{\n    background: #EB6379;\n}\n.business .content:after{\t\n\tborder-top-color: #EB6379;\t\n}\n.business .pt-footer:after {\t\n\tborder-top-color: #FFFFFF;\t\n}\n</style>\n</head>\n<body>\n    <div class=\"wrapper\">\n        <div class=\"pricing-table group\">\n            <h1 class=\"heading\">\n                Metrics overview\n            </h1>\n            <div class=\"block personal fl\">\n                <h2 class=\"title\">GitHub Stars</h2>\n                <div class=\"content\">\n                    <p class=\"price\">\n                        <span>{{$node[\"GitHub\"].json[\"stargazers_count\"]}}</span>\n                    </p>\n                </div>\n            </div>\n            <div class=\"block business fl\">\n                <h2 class=\"title\">GitHub Forks</h2>\n                <div class=\"content\">\n                    <p class=\"price\">\n                        <span>{{$node[\"GitHub\"].json[\"forks\"]}}</span>\n                    </p>\n                </div>\n            </div>\n            <div class=\"block business\">\n                <h2 class=\"title\">Docker Pulls</h2>\n                <div class=\"content\">\n                    <p class=\"price\">\n                        <span>{{$node[\"HTTP Request\"].json[\"pull_count\"]}}</span>\n                    </p>\n                </div>\n            </div>\n        </div>\n    </div>\n</body>\n</html>"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Set",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        1060,
+        450
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "GitHub",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GitHub": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Set",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {},
+  "id": 293
+}

@@ -1,0 +1,69 @@
+{
+  "name": "Test",
+  "nodes": [
+    {
+      "parameters": {},
+      "name": "Start",
+      "type": "n8n-nodes-base.start",
+      "typeVersion": 1,
+      "position": [
+        270,
+        530
+      ]
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "string": [
+            {
+              "name": "html",
+              "value": "=<html>\n<body>\n<h1>From n8n with love 🖖</h1>\n<b>Host:</b> {{$json[\"headers\"][\"host\"]}}\n</br>\n<b>User Agent:</b> {{$json[\"headers\"][\"user-agent\"]}}\n</body>\n</html>"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Set",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        450,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "path": "395b0bee-6a8f-4e05-8967-1058bd206552",
+        "responseMode": "lastNode",
+        "options": {
+          "responsePropertyName": "html"
+        }
+      },
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        250,
+        300
+      ],
+      "webhookId": "395b0bee-6a8f-4e05-8967-1058bd206552"
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Set",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {},
+  "id": 294
+}

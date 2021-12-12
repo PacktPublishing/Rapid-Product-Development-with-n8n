@@ -1,0 +1,155 @@
+{
+  "name": "Merging datasets",
+  "nodes": [
+    {
+      "parameters": {},
+      "name": "Start",
+      "type": "n8n-nodes-base.start",
+      "typeVersion": 1,
+      "position": [
+        250,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "list",
+        "application": "appUlyHU1UUYCaCfO",
+        "table": "Users",
+        "additionalOptions": {}
+      },
+      "name": "Airtable",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 1,
+      "position": [
+        450,
+        300
+      ],
+      "credentials": {
+        "airtableApi": {
+          "id": "41",
+          "name": "Airtable"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "mergeByKey",
+        "propertyName1": "UserID",
+        "propertyName2": "UserID"
+      },
+      "name": "Merge",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 1,
+      "position": [
+        820,
+        390
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "list",
+        "application": "appUlyHU1UUYCaCfO",
+        "table": "Stats",
+        "additionalOptions": {}
+      },
+      "name": "Airtable1",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 1,
+      "position": [
+        450,
+        500
+      ],
+      "credentials": {
+        "airtableApi": {
+          "id": "41",
+          "name": "Airtable"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "functionCode": "const newItems = [];\n\nfor(let i=0; i<items.length; i++) {\n  newItems.push({json: items[i].json.fields});\n}\n\nreturn newItems;"
+      },
+      "name": "Function",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        640,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "const newItems = [];\n\nfor(let i=0; i<items.length; i++) {\n  newItems.push({json: items[i].json.fields});\n}\n\nreturn newItems;"
+      },
+      "name": "Function1",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        640,
+        500
+      ]
+    }
+  ],
+  "connections": {
+    "Start": {
+      "main": [
+        [
+          {
+            "node": "Airtable",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Airtable": {
+      "main": [
+        [
+          {
+            "node": "Function",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Airtable1": {
+      "main": [
+        [
+          {
+            "node": "Function1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Function": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Function1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {},
+  "id": 299
+}

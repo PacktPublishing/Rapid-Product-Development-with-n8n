@@ -1,0 +1,75 @@
+{
+  "name": "Average clicks",
+  "nodes": [
+    {
+      "parameters": {},
+      "name": "Start",
+      "type": "n8n-nodes-base.start",
+      "typeVersion": 1,
+      "position": [
+        250,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "list",
+        "application": "appUlyHU1UUYCaCfO",
+        "table": "Newsletters",
+        "additionalOptions": {}
+      },
+      "name": "Airtable",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 1,
+      "position": [
+        450,
+        300
+      ],
+      "credentials": {
+        "airtableApi": {
+          "id": "41",
+          "name": "Airtable"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "functionCode": "let total = 0;\nlet average = 0;\n\nfor (let i=0; i<items.length; i++) {\n  total = total + parseInt(items[i].json.fields.Clicks);\n}\n\naverage = total/items.length;\n\nreturn [{json: {average_clicks: average}}];"
+      },
+      "name": "Function",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        650,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Start": {
+      "main": [
+        [
+          {
+            "node": "Airtable",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Airtable": {
+      "main": [
+        [
+          {
+            "node": "Function",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {},
+  "id": 300
+}

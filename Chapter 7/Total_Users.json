@@ -1,0 +1,86 @@
+{
+  "name": "Total Users",
+  "nodes": [
+    {
+      "parameters": {},
+      "name": "Start",
+      "type": "n8n-nodes-base.start",
+      "typeVersion": 1,
+      "position": [
+        500,
+        290
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "list",
+        "application": "appUlyHU1UUYCaCfO",
+        "table": "Users",
+        "additionalOptions": {}
+      },
+      "name": "Airtable",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 1,
+      "position": [
+        691,
+        289
+      ],
+      "credentials": {
+        "airtableApi": {
+          "id": "41",
+          "name": "Airtable"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "string": [],
+          "number": [
+            {
+              "name": "Total Users",
+              "value": "={{$items.length}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Set",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        891,
+        289
+      ],
+      "executeOnce": true
+    }
+  ],
+  "connections": {
+    "Airtable": {
+      "main": [
+        [
+          {
+            "node": "Set",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Start": {
+      "main": [
+        [
+          {
+            "node": "Airtable",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {},
+  "id": 301
+}

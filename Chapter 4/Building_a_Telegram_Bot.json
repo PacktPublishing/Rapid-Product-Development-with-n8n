@@ -1,0 +1,179 @@
+{
+  "name": "Building a Telegram Bot",
+  "nodes": [
+    {
+      "parameters": {},
+      "name": "Start",
+      "type": "n8n-nodes-base.start",
+      "typeVersion": 1,
+      "position": [
+        240,
+        -80
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=https://pokeapi.co/api/v2/pokemon/{{$json[\"message\"][\"text\"].split(' ')[1]}}",
+        "options": {}
+      },
+      "name": "HTTP Request",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        650,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "updates": [
+          "*"
+        ],
+        "additionalFields": {}
+      },
+      "name": "Telegram Trigger",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1,
+      "position": [
+        250,
+        300
+      ],
+      "webhookId": "90702c56-473e-4b45-8290-9193a2db7bbc",
+      "credentials": {
+        "telegramApi": {
+          "id": "205",
+          "name": "Pokemon Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json[\"message\"][\"text\"].split(' ')[1]}}",
+              "operation": "isEmpty"
+            }
+          ]
+        }
+      },
+      "name": "IF",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        450,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "const abilities = [];\nconst moves = [];\nconst types = [];\n\nfor (let i=0; i<items[0].json.abilities.length;i++) {\n  abilities.push(items[0].json.abilities[i].ability.name);\n}\n\nfor (let i=0; i<items[0].json.moves.length;i++) {\n  moves.push(items[0].json.moves[i].move.name);\n}\n\nfor (let i=0; i<items[0].json.types.length;i++) {\n  types.push(items[0].json.types[i].type.name);\n}\n\nreturn [{json: {name: items[0].json.name, abilities, moves, types}}];"
+      },
+      "name": "Function",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        850,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{$node[\"Telegram Trigger\"].json[\"message\"][\"chat\"][\"id\"]}}",
+        "text": "👀 Please enter the name of a Pokemon. For example, '/pokemon ditto' (without the quotes).",
+        "additionalFields": {}
+      },
+      "name": "Telegram",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [
+        650,
+        200
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "205",
+          "name": "Pokemon Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{$node[\"Telegram Trigger\"].json[\"message\"][\"chat\"][\"id\"]}}",
+        "text": "=<b>Name:</b> {{$json[\"name\"]}}\n<b>Abilities:</b> {{$json[\"abilities\"].join(', ')}}\n<b>Moves:</b> {{$json[\"moves\"].join(', ')}}\n<b>Types:</b> {{$json[\"types\"].join(', ')}}",
+        "additionalFields": {
+          "parse_mode": "HTML"
+        }
+      },
+      "name": "Telegram1",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [
+        1050,
+        400
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "205",
+          "name": "Pokemon Bot"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Function",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "IF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF": {
+      "main": [
+        [
+          {
+            "node": "Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Function": {
+      "main": [
+        [
+          {
+            "node": "Telegram1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {},
+  "id": 291
+}

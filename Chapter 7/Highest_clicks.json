@@ -1,0 +1,75 @@
+{
+  "name": "Highest clicks",
+  "nodes": [
+    {
+      "parameters": {},
+      "name": "Start",
+      "type": "n8n-nodes-base.start",
+      "typeVersion": 1,
+      "position": [
+        250,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "list",
+        "application": "appUlyHU1UUYCaCfO",
+        "table": "Stats",
+        "additionalOptions": {}
+      },
+      "name": "Airtable",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 1,
+      "position": [
+        450,
+        300
+      ],
+      "credentials": {
+        "airtableApi": {
+          "id": "41",
+          "name": "Airtable"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "functionCode": "const clicks = [];\nlet highest = 0;\n\nfor (let i=0; i<items.length; i++) {\n  clicks.push(items[i].json.fields.Clicks);\n}\n\nhighest = Math.max(...clicks);\n\nreturn [{json: {highest_clicks: highest}}];"
+      },
+      "name": "Function",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        650,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Airtable": {
+      "main": [
+        [
+          {
+            "node": "Function",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Start": {
+      "main": [
+        [
+          {
+            "node": "Airtable",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {},
+  "id": 302
+}

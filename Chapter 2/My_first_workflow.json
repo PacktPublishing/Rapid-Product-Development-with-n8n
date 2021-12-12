@@ -1,0 +1,86 @@
+{
+  "name": "My first workflow",
+  "nodes": [
+    {
+      "parameters": {},
+      "name": "Start",
+      "type": "n8n-nodes-base.start",
+      "typeVersion": 1,
+      "position": [
+        250,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "all",
+        "additionalFields": {}
+      },
+      "name": "Get news",
+      "type": "n8n-nodes-base.hackerNews",
+      "typeVersion": 1,
+      "position": [
+        450,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "string": [
+            {
+              "name": "Title",
+              "value": "={{$json[\"title\"]}}"
+            },
+            {
+              "name": "URL",
+              "value": "={{$json[\"url\"]}}"
+            }
+          ],
+          "number": [
+            {
+              "name": "ID",
+              "value": "=ID_{{ Math.floor(Math.random() *1000) }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Set",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        650,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Start": {
+      "main": [
+        [
+          {
+            "node": "Get news",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get news": {
+      "main": [
+        [
+          {
+            "node": "Set",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {},
+  "id": 289
+}
