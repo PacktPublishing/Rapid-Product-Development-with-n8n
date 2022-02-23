@@ -7,7 +7,7 @@ This is the code repository for [Rapid Product Development with n8n](https://www
 **A practical guide to creating digital products on the web using workflow automation and n8n**
 
 ## What is this book about?
-Explore how n8n enables you to connect different systems and cloud services without having to hire specialists or develop technical skill sets across multiple tech stacks. This book will show you how n8n can reduce the time required to develop new products, helping you bring them to the market quickly as compared to building a whole development team.
+Explore how n8n enables you to connect different systems and cloud services without having to hire specialists or develop technical skill sets across multiple tech stacks. This book will show you how n8n can reduce the time required to develop new products, helping you bring them to the market quickly compared to building a whole development team.
 
 This book covers the following exciting features:
 * Identify opportunities to use n8n in your organization and develop a business use case
